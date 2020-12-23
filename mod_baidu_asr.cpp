@@ -489,5 +489,6 @@ SWITCH_MODULE_LOAD_FUNCTION(mod_baidu_asr_load) {
 //SWITCH_MODULE_LOAD_FUNCTION(卸载时执行的函数)
 SWITCH_MODULE_SHUTDOWN_FUNCTION(mod_baidu_asr_shutdown) {
     switch_log_printf(SWITCH_CHANNEL_LOG, SWITCH_LOG_DEBUG, "baidu_asr_shutdown\n");
+    bds::BDSpeechSDK::do_cleanup();//所有识别结束，不需要发起新的识别。SDK空闲时才能执行
     return SWITCH_STATUS_SUCCESS;
 }

@@ -314,7 +314,7 @@ static switch_bool_t baidu_asr_callback(switch_media_bug_t *bug, void *user_arg,
             switch_log_printf(SWITCH_CHANNEL_LOG, SWITCH_LOG_INFO, "%s SWITCH_ABC_TYPE_CLOSE\n", channel_name);
 
             //告诉sdk，后续不会再post音频数据 ， 注意这个调用之后需要紧接着调用asr_online_stop
-            user_data->push_params->set_parameter(bds::DATA_CHUNK, nullptr, 0);
+            user_data->push_params->set_parameter(bds::DATA_CHUNK, NULL, 0);
 
             /*  6 发送停止传输音频数据标记  */
             asr_online_stop(user_data->sdk);
@@ -489,6 +489,5 @@ SWITCH_MODULE_LOAD_FUNCTION(mod_baidu_asr_load) {
 //SWITCH_MODULE_LOAD_FUNCTION(卸载时执行的函数)
 SWITCH_MODULE_SHUTDOWN_FUNCTION(mod_baidu_asr_shutdown) {
     switch_log_printf(SWITCH_CHANNEL_LOG, SWITCH_LOG_DEBUG, "baidu_asr_shutdown\n");
-    bds::BDSpeechSDK::do_cleanup();//所有识别结束，不需要发起新的识别。SDK空闲时才能执行
     return SWITCH_STATUS_SUCCESS;
 }

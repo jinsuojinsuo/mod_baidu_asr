@@ -13,7 +13,7 @@
 
 using namespace std;
 
-//下面的代码是调用一个带参数的宏,这此宏定义在switch_type.h中,替换后如下一行
+//下面的代码是调用一个带参数的宏,这此宏定义在switch_type.h中,替换后如下一行  1
 //switch_status_t mod_baidu_asr_load(switch_loadable_module_interface_t **module_interface, switch_memory_pool_t *pool);
 //SWITCH_MODULE_LOAD_FUNCTION(加载模块时执行的函数)
 SWITCH_MODULE_LOAD_FUNCTION(mod_baidu_asr_load);

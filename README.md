@@ -49,8 +49,10 @@ originate {absolute_codec_string=PCMU}user/8006 baidu_asr:'10555002 jhRA15uv8Lvd
 baidu_asr:'app_id chunk_key secret_key PRODUCT_ID 静音切分帧30帧=300ms'
 
 ## 3.百度参考文档
+```
 参考文档: https://ai.baidu.com/ai-doc/SPEECH/Rkh4hbm7p
 百度sdk下载: https://ai.baidu.com/sdk#asr
+```
 
 
 
@@ -83,4 +85,5 @@ ASR-Response: {"results_recognition":["欢迎指点佳美口腔。"],"origin_res
 Unique-ID: 2222e8cb-f017-4e21-ba5d-6a9fb430131d
 ```
 
-
+# 七、欢迎交流
+1027976383@qq.com

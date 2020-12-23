@@ -33,9 +33,12 @@ cd ./mod_baidu_asr
 cmake -S ./ -B ./build
 make -C ./build
 make install -C ./build
-
 ```
 
+## 3.一条命令
+```
+rm -rf build && cmake -S ./ -B build && make -C build && make install -C build
+```
 
 # 四、freeswitch加载模块
 ## 1.将 mod_baidu_asr.so 放入 {freeswitch/mod/}mod_baidu_asr.so

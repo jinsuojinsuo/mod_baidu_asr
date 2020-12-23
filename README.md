@@ -32,6 +32,8 @@ git clone https://github.com/jinsuojinsuo/mod_baidu_asr.git
 cd ./mod_baidu_asr
 cmake -S ./ -B ./build
 make -C ./build
+make install -C ./build
+
 ```
 
 

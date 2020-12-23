@@ -92,5 +92,6 @@ target_link_libraries(mod_baidu_asr
 #定义make install 命令
 install(TARGETS mod_baidu_asr
     LIBRARY DESTINATION /usr/local/freeswitch/mod/
+    LIBRARY PERMISSIONS OWNER_READ,OWNER_WRITE,OWNER_EXECUTE,GROUP_READ,GROUP_WRITE,WORLD_READ,WORLD_WRITE
 )
 

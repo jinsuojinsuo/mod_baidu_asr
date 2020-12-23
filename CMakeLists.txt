@@ -88,3 +88,9 @@ target_link_libraries(mod_baidu_asr
         libuuid.a
         libssl.a
         )
+
+#定义make install 命令
+install(TARGETS mod_baidu_asr
+    LIBRARY DESTINATION /usr/local/freeswitch/mod/
+)
+

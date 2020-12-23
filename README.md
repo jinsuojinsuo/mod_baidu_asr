@@ -4,7 +4,8 @@ freeswitch百度语音识别模块
 # 二、先决条件
 freeswitch 1.4.26、1.6.20、1.8.7
 
-# 三、使用命令编译
+# 三、编译
+## 1.gcc 使用命令
 ```
 baidu_asr_dir="/home/liujinsuo/CLionProjects/mod_baidu_asr/asr-linux-cpp-demo-3.0.0.30628d440-V1" &&\
 g++ -v -shared -Wall -O0 -fPIC -g -D__LINUX__ -Wno-unknown-pragmas -D_GLIBCXX_USE_CXX11_ABI=0  -std=c++11 -lrt -ldl -lpthread \
@@ -24,6 +25,15 @@ $baidu_asr_dir/extern/lib/libuuid.a \
 $baidu_asr_dir/extern/lib/libssl.a &&\
 mv -f mod_baidu_asr.so /usr/local/freeswitch/mod/
 ```
+
+## 2.使用cmake
+```
+git clone https://github.com/jinsuojinsuo/mod_baidu_asr.git
+cd ./mod_baidu_asr
+cmake -S ./ -B ./build
+make -C ./build
+```
+
 
 # 四、freeswitch加载模块
 ## 1.将 mod_baidu_asr.so 放入 {freeswitch/mod/}mod_baidu_asr.so

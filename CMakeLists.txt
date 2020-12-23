@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.17)
+cmake_minimum_required(VERSION 3.10)
 project(mod_baidu_asr)
 
 set(CMAKE_CXX_STANDARD 14)
@@ -65,7 +65,7 @@ link_directories(
 )
 
 #生成动态库
-add_library(mod_baidu_asr SHARED mod_baidu_asr.cpp ${asr_lib_list} ${asr_extern_list})
+add_library(mod_baidu_asr SHARED mod_baidu_asr.cpp)
 
 #去除库文件名前缀lib必须放在 add_library下面
 set_target_properties(mod_baidu_asr PROPERTIES PREFIX "")

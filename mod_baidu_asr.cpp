@@ -337,7 +337,10 @@ static switch_bool_t baidu_asr_callback(switch_media_bug_t *bug, void *user_arg,
         }
         case SWITCH_ABC_TYPE_READ_REPLACE: {//读取到音频流
             switch_frame_t *frame;
-            if ((frame = switch_core_media_bug_get_read_replace_frame(bug))) {
+            if (user_data->asr_finish_tags == true) {
+                switch_log_printf(SWITCH_CHANNEL_LOG, SWITCH_LOG_INFO, "%s 识别通道提前结束,挂机\n", channel_name);
+                switch_channel_hangup(user_data->channel, SWITCH_CAUSE_NORMAL_CLEARING);
+            } else if ((frame = switch_core_media_bug_get_read_replace_frame(bug))) {
                 int frame_len = frame->datalen;            //语音流长度
                 char *frame_data = (char *) frame->data; //语音流内容
 

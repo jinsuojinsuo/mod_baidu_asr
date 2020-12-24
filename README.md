@@ -7,7 +7,7 @@ freeswitch 1.4.26、1.6.20、1.8.7
 # 三、编译
 ## 1.gcc 使用命令
 ```
-baidu_asr_dir="/home/liujinsuo/CLionProjects/mod_baidu_asr/asr-linux-cpp-demo-3.0.0.30628d440-V1" &&\
+baidu_asr_dir="/home/liujinsuo/CLionProjects/mod_baidu_asr/asr-linux-cpp-demo" &&\
 g++ -v -shared -Wall -O0 -fPIC -g -D__LINUX__ -Wno-unknown-pragmas -D_GLIBCXX_USE_CXX11_ABI=0  -std=c++11 -lrt -ldl -lpthread \
 -I /usr/local/freeswitch/include/freeswitch \
 -L /usr/local/freeswitch/lib \

@@ -1,52 +1,51 @@
 cmake_minimum_required(VERSION 3.10)
 project(mod_baidu_asr)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 11)
 
 
 #编译错误检查测试时建议打开
 add_compile_options(
         -Wall
-        -Werror
-        -Wextra
-        -pedantic
-        -Wimplicit-fallthrough
-        -Wsequence-point
-        -Wswitch-default
-        -Wswitch-unreachable
-        -Wswitch-enum
-        -Wstringop-truncation
-        -Wbool-compare
-        -Wtautological-compare
-        -Wfloat-equal
-        -Wshadow=global
-        -Wpointer-arith
-        -Wpointer-compare
-        -Wcast-align
-        -Wcast-qual
-        -Wwrite-strings #禁止使用c字符串
-        -Wdangling-else
-        -Wlogical-op
-        -Wconversion
-        -Wno-pedantic-ms-format
-
+        #        -Werror
+        #        -Wextra
+        #        -pedantic
+        #        -Wimplicit-fallthrough
+        #        -Wsequence-point
+        #        -Wswitch-default
+        #        -Wswitch-unreachable
+        #        -Wswitch-enum
+        #        -Wstringop-truncation
+        #        -Wbool-compare
+        #        -Wtautological-compare
+        #        -Wfloat-equal
+        #        -Wshadow=global
+        #        -Wpointer-arith
+        #        -Wpointer-compare
+        #        -Wcast-align
+        #        -Wcast-qual
+        #        -Wwrite-strings #禁止使用c字符串
+        #        -Wdangling-else
+        #        -Wlogical-op
+        #        -Wconversion
+        #        -Wno-pedantic-ms-format
+        #
         -Wno-unknown-pragmas
-        -Wno-float-equal
-        -Wno-switch-default
-        -Wno-conversion
-        -Wno-cast-qual
-        -Wno-logical-op
-        -Wno-switch-enum
+        #        -Wno-float-equal
+        #        -Wno-switch-default
+        #        -Wno-conversion
+        #        -Wno-cast-qual
+        #        -Wno-logical-op
+        #        -Wno-switch-enum
 )
 
 
 add_definitions(
+        -v
         -D__LINUX__
         -D_GLIBCXX_USE_CXX11_ABI=0
-        -g
         -O0
         -fPIC
-        -v
 )
 
 #指定头文件搜索路径 -I
@@ -70,14 +69,15 @@ add_library(mod_baidu_asr SHARED mod_baidu_asr.cpp)
 set_target_properties(mod_baidu_asr PROPERTIES PREFIX "")
 
 #链接动态库
-target_link_libraries(mod_baidu_asr
-        -lrt
-        -ldl
-        -lpthread
-        )
+#target_link_libraries(mod_baidu_asr
+#
+#        )
 
 #指定要链接的静态库-ls
 target_link_libraries(mod_baidu_asr
+        rt
+        dl
+        pthread
         libBDSpeechSDK.a
         libcurl.a
         libiconv.a

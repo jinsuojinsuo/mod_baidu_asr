@@ -46,6 +46,8 @@ add_definitions(
         -D_GLIBCXX_USE_CXX11_ABI=0
         -O0
         -fPIC
+        -D_BDS_EASR_MFE_DNN="${PROJECT_SOURCE_DIR}/asr-linux-cpp-demo/resources/asr_resource/bds_easr_mfe_dnn.dat"
+        -D_BDS_EASR_MFE_CMVN="${PROJECT_SOURCE_DIR}/asr-linux-cpp-demo/resources/asr_resource/bds_easr_mfe_cmvn.dat"
 )
 
 #指定头文件搜索路径 -I
@@ -67,11 +69,6 @@ add_library(mod_baidu_asr SHARED mod_baidu_asr.cpp)
 
 #去除库文件名前缀lib必须放在 add_library下面
 set_target_properties(mod_baidu_asr PROPERTIES PREFIX "")
-
-#链接动态库
-#target_link_libraries(mod_baidu_asr
-#
-#        )
 
 #指定要链接的静态库-ls
 target_link_libraries(mod_baidu_asr

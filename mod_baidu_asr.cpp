@@ -47,12 +47,19 @@ struct switch_da_t {
     switch_media_bug_t *bug;
 };
 
+#ifdef _BDS_EASR_MFE_DNN
+
+#else
+#define _BDS_EASR_MFE_DNN ""
+#define _BDS_EASR_MFE_CMVN ""
+#endif
+
 /**
  * 请根据文档说明设置参数
  */
 void asr_set_config_params(bds::BDSSDKMessage &cfg_params, switch_da_t *user_data) {
     //const bds::TBDVoiceRecognitionDebugLogLevel sdk_log_level = bds::EVRDebugLogLevelTrace;
-    const bds::TBDVoiceRecognitionDebugLogLevel sdk_log_level = bds::EVRDebugLogLevelInformation; // 关闭详细日志
+    const bds::TBDVoiceRecognitionDebugLogLevel sdk_log_level = bds::EVRDebugLogLevelTrace; // 关闭详细日志
 
     // app_id app_key app_secret 请测试成功后替换为您在网页上申请的appId appKey和appSecret
     const std::string app_id = user_data->app_id;
@@ -86,8 +93,10 @@ void asr_set_config_params(bds::BDSSDKMessage &cfg_params, switch_da_t *user_dat
 
     cfg_params.set_parameter(bds::ASR_PARAM_KEY_ENABLE_LONG_SPEECH, 1);                                                                                                   // 强制固定值
     cfg_params.set_parameter(bds::ASR_PARAM_KEY_CHUNK_ENABLE, 1);                                                                                                       // 强制固定值
-    const std::string mfe_dnn_file_path = "/var/cpp/freeswitch_mod/mod_baidu_asr/asr-linux-cpp-demo-3.0.0.30628d440-V1/resources/asr_resource/bds_easr_mfe_dnn.dat";   //  bds_easr_mfe_dnn.dat文件路径
-    const std::string mfe_cmvn_file_path = "/var/cpp/freeswitch_mod/mod_baidu_asr/asr-linux-cpp-demo-3.0.0.30628d440-V1/resources/asr_resource/bds_easr_mfe_cmvn.dat"; //  bds_easr_mfe_cmvn.dat文件路径
+
+    const std::string mfe_dnn_file_path = _BDS_EASR_MFE_DNN;   //  bds_easr_mfe_dnn.dat文件路径
+    const std::string mfe_cmvn_file_path = _BDS_EASR_MFE_CMVN; //  bds_easr_mfe_cmvn.dat文件路径
+
     cfg_params.set_parameter(bds::ASR_PARAM_KEY_MFE_DNN_DAT_FILE, mfe_dnn_file_path);                                                                                   // 强制固定值
     cfg_params.set_parameter(bds::ASR_PARAM_KEY_MFE_CMVN_DAT_FILE, mfe_cmvn_file_path);                                                                                   // 强制固定值
     cfg_params.set_parameter(bds::ASR_PARAM_KEY_COMPRESSION_TYPE, bds::EVR_AUDIO_COMPRESSION_PCM);
@@ -482,8 +491,10 @@ SWITCH_MODULE_LOAD_FUNCTION(mod_baidu_asr_load) {
     *module_interface = switch_loadable_module_create_module_interface(pool, modname);
 
     //SWITCH_ADD_APP(app_interface,"模块名","短描述","长描述",调用模块时执行的回调函数,"看源码像是调用出错时的字符串")
-    SWITCH_ADD_APP(app_interface, "baidu_asr", "baidu_asr_1", "baidu_asr_2", start_baidu_asr_session_function,
-                   "baidu_asr调用出错7777777", SAF_MEDIA_TAP);
+    SWITCH_ADD_APP(app_interface, "baidu_asr", "baidu_asr_1", "baidu_asr_2", start_baidu_asr_session_function, "baidu_asr调用出错7777777", SAF_MEDIA_TAP);
+
+    switch_log_printf(SWITCH_CHANNEL_LOG, SWITCH_LOG_INFO, "_BDS_EASR_MFE_DNN=%s \n", _BDS_EASR_MFE_DNN);
+    switch_log_printf(SWITCH_CHANNEL_LOG, SWITCH_LOG_INFO, "_BDS_EASR_MFE_CMVN=%s \n", _BDS_EASR_MFE_CMVN);
     return SWITCH_STATUS_SUCCESS;
 }
 

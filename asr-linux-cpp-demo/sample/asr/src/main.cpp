@@ -63,11 +63,15 @@ void asr_set_config_params(bds::BDSSDKMessage &cfg_params) {
     const std::string secret_key = "f0a12f8261e1121861a1cd3f4ed02f68";
 
     const std::string product_id = "15362";
-    // const std::string product_id = "1536";// 普通话搜索模型：1536，普通话搜索模型+语义理解 15361, 普通话输入法模型（有逗号） 1537
+    // const std::string product_id = "1536";// 普通话搜索模型：1536，普通话搜索模型+语义理解 15361, 普通话输入法模型（有逗号） 1537 , 8001 8002
 
     cfg_params.name = bds::ASR_CMD_CONFIG;
 
     cfg_params.set_parameter(bds::ASR_PARAM_KEY_APP_ID, app_id);
+
+    // 自训练平台上线模型的调用参数，与product_id 8001 或 8002连用。
+    // cfg_params.set_parameter(bds::ASR_PARAM_KEY_LMID, 1068);  // 设为 product_id = 8002 
+    
     cfg_params.set_parameter(bds::ASR_PARAM_KEY_CHUNK_KEY, chunk_key);
 
     cfg_params.set_parameter(bds::ASR_PARAM_KEY_PRODUCT_ID, product_id);
@@ -324,6 +328,7 @@ static void *asr_thread(void *arg) {
     FILE *err_output_file = stderr;
     fprintf(stdout, "Will recognize file: %s\n", file_name);
 
+    fprintf(stdout, "sdk version :%s\n", bds::BDSpeechSDK::get_sdk_version().c_str());
     /*  0 设置日志文件路径，如不设置默认输出到stderr     */
     bds::BDSpeechSDK::open_log_file("asr.log", 25); // 与BDSpeechSDK::close_log_file();配对使用。
     // 25 表示 日志文件大小约25*512k， 超过后SDK新建一个日志文件，旧日志文件覆盖到"asr.log.bak"
@@ -336,7 +341,7 @@ static void *asr_thread(void *arg) {
         fprintf(err_output_file, "thread %d, get sdk failed for %s\n", thread_seq, err_msg.c_str());
         return NULL;
     }
-    fprintf(stdout, "sdk version :%s\n", sdk->get_sdk_version().c_str());
+    
     /*  2 设置输出回调  */
     sdk->set_event_listener(&asr_output_callback, (void *) &thread_seq);
 

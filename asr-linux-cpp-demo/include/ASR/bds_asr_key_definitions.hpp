@@ -212,7 +212,7 @@ extern const std::string ASR_PARAM_KEY_SAVE_AUDIO_PATH;
      * ASR_PARAM_KEY_DISABLE_PUNCTUATION
      * Value explanation:   是否关闭标点
      * Value type:          int
-     * Valid Value:         Enable (1) or Disable (0)
+     * Valid Value:         Disable (1) or Not Disable (0)
      * Default value:       0
      */
     extern const std::string ASR_PARAM_KEY_DISABLE_PUNCTUATION;
@@ -223,6 +223,7 @@ extern const std::string ASR_PARAM_KEY_SAVE_AUDIO_PATH;
      * Value type:          int
      * Valid Value:         Enable (1) or Disable (0)	    
      * Default value:       1
+     * 注意：这个参数不管用，控制不了服务端的VAD，老版本的SDK才可以
      */
     extern const std::string ASR_PARAM_KEY_ENABLE_SERVER_VAD;
 
@@ -279,6 +280,14 @@ extern const std::string ASR_PARAM_KEY_SAVE_AUDIO_PATH;
     extern const std::string ASR_PARAM_KEY_APP_ID;
 
     /*
+     * ASR_PARAM_KEY_LMID
+     * Value explanation:   设置LMID
+     * Value type:          int
+     * Default value:       -
+     */
+    extern const std::string ASR_PARAM_KEY_LMID;
+
+    /*
      * ASR_PARAM_KEY_VP_PARAMS
      * Value explanation:   设置vp_params
      * Value type:          std::string
@@ -300,7 +309,7 @@ extern const std::string ASR_PARAM_KEY_SAVE_AUDIO_PATH;
      * Value explanation:   设置识别类型列表，输入法不可与其他类型复合
      * Value type:          std::string(JSON array)
      * Default value:       {"property_list":[EVoiceRecognitionPropertySearch]}
-     *
+     
      * NOTE:                Give a JSON string containing "property_list" key. The value for this key
      *                      should be a json array of integers.\
      *

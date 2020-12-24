@@ -47,21 +47,20 @@ add_definitions(
         -O0
         -fPIC
         -v
-
 )
 
 #指定头文件搜索路径 -I
 include_directories(
-        ./asr-linux-cpp-demo-3.0.0.30628d440-V1/include
-        ./asr-linux-cpp-demo-3.0.0.30628d440-V1/include/ASR
+        ./asr-linux-cpp-demo/include
+        ./asr-linux-cpp-demo/include/ASR
         /usr/local/freeswitch/include/freeswitch
 )
 
 #指定静态库或动态库搜索路径 -L
 link_directories(
-        /usr/local/freeswitch/lib
-        ./asr-linux-cpp-demo-3.0.0.30628d440-V1/lib/
-        ./asr-linux-cpp-demo-3.0.0.30628d440-V1/extern/lib/
+        /usr/local/freeswitch/lib/
+        ./asr-linux-cpp-demo/lib/
+        ./asr-linux-cpp-demo/extern/lib/
 )
 
 #生成动态库
@@ -77,7 +76,7 @@ target_link_libraries(mod_baidu_asr
         -lpthread
         )
 
-#指定要链接的静态库-l
+#指定要链接的静态库-ls
 target_link_libraries(mod_baidu_asr
         libBDSpeechSDK.a
         libcurl.a
@@ -86,13 +85,12 @@ target_link_libraries(mod_baidu_asr
         libssl.a
         libcrypto.a
         libuuid.a
-        libssl.a
         )
 
 #定义make install 命令
 install(TARGETS mod_baidu_asr
-    LIBRARY DESTINATION /usr/local/freeswitch/mod/ 
-    PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
-)
+        LIBRARY DESTINATION /usr/local/freeswitch/mod/
+        PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+        )
 
 

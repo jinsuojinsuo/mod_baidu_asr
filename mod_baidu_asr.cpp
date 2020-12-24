@@ -52,7 +52,7 @@ struct switch_da_t {
  */
 void asr_set_config_params(bds::BDSSDKMessage &cfg_params, switch_da_t *user_data) {
     //const bds::TBDVoiceRecognitionDebugLogLevel sdk_log_level = bds::EVRDebugLogLevelTrace;
-    const bds::TBDVoiceRecognitionDebugLogLevel sdk_log_level = bds::EVRDebugLogLevelOff; // 关闭详细日志
+    const bds::TBDVoiceRecognitionDebugLogLevel sdk_log_level = bds::EVRDebugLogLevelInformation; // 关闭详细日志
 
     // app_id app_key app_secret 请测试成功后替换为您在网页上申请的appId appKey和appSecret
     const std::string app_id = user_data->app_id;

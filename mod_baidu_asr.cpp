@@ -396,7 +396,7 @@ SWITCH_STANDARD_APP(start_baidu_asr_session_function) {
     memset(&read_impl, 0, sizeof(switch_codec_implementation_t));
 
     int argc;             //调用app时传参个数
-    char *argv[5] = {0}; //调用app时传的参数 数组
+    char *argv[6] = {0}; //调用app时传的参数 数组
     char *lbuf = nullptr;   //调用app时传的参数 字符串 会话内存池中的地址
 
     //zstr()//如果字符串为空或长度为零，则返回真值

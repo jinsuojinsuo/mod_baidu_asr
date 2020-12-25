@@ -34,6 +34,7 @@ SWITCH_MODULE_DEFINITION(mod_baidu_asr, mod_baidu_asr_load, mod_baidu_asr_shutdo
 
 struct switch_da_t {
     int stop;
+    char *app_name;
     char *app_id;
     char *chunk_key;
     char *secret_key;
@@ -108,8 +109,8 @@ void asr_set_config_params(bds::BDSSDKMessage &cfg_params, switch_da_t *user_dat
 }
 
 // 设置启动参数
-void asr_set_start_params(bds::BDSSDKMessage &start_params) {
-    const std::string app = "YourOwnName";
+void asr_set_start_params(bds::BDSSDKMessage &start_params, char *app_name) {
+    const std::string app = app_name;
     start_params.name = bds::ASR_CMD_START;
     start_params.set_parameter(bds::ASR_PARAM_KEY_APP, app);
     start_params.set_parameter(bds::ASR_PARAM_KEY_PLATFORM, "linux");          //固定值
@@ -412,8 +413,8 @@ SWITCH_STANDARD_APP(start_baidu_asr_session_function) {
 
     //switch_separate_string(要分割的字符串,分割符,拆分后的数组,数组中元素的最大数目) 将字符串分隔为数组,反回分割后数组的元素个数
     argc = switch_separate_string(lbuf, ' ', argv, (sizeof(argv) / sizeof(argv[0])));
-    if (argc < 5) {
-        switch_log_printf(SWITCH_CHANNEL_SESSION_LOG(session), SWITCH_LOG_WARNING, "%s 调用 baidu_asr 获取参数个数不能小于4个\n", channel_name);
+    if (argc < 6) {
+        switch_log_printf(SWITCH_CHANNEL_SESSION_LOG(session), SWITCH_LOG_WARNING, "%s 调用 baidu_asr 获取参数个数不能小于6个\n", channel_name);
         return;
     }
 
@@ -427,12 +428,13 @@ SWITCH_STANDARD_APP(start_baidu_asr_session_function) {
     }
 
     pvt->stop = 0;
-    pvt->app_id = argv[0];                   //识别系统Id
-    pvt->chunk_key = argv[1];               //chunk_key
-    pvt->secret_key = argv[2];               //secret_key
-    pvt->product_id = argv[3];               //识别模型
+    pvt->app_name = argv[0]; //应用名称
+    pvt->app_id = argv[1];                   //识别系统Id
+    pvt->chunk_key = argv[2];               //chunk_key
+    pvt->secret_key = argv[3];               //secret_key
+    pvt->product_id = argv[4];               //识别模型
     pvt->asr_finish_tags = false;           //线程是否结束识别 true已结束 未結束false
-    pvt->vad_pause_frames = atof(argv[4]); //设置vad语句静音切分门限（帧）, 30帧 = 300ms
+    pvt->vad_pause_frames = atof(argv[5]); //设置vad语句静音切分门限（帧）, 30帧 = 300ms
     pvt->session = session;
     pvt->channel = channel;
 
@@ -458,7 +460,7 @@ SWITCH_STANDARD_APP(start_baidu_asr_session_function) {
 
     /*  4 设置并发送sdk启动参数 */
     bds::BDSSDKMessage start_params;
-    asr_set_start_params(start_params);
+    asr_set_start_params(start_params, pvt->app_name);
     if (!sdk->post(start_params, err_msg)) {
         switch_log_printf(SWITCH_CHANNEL_LOG, SWITCH_LOG_WARNING, "%s start sdk failed for %s\n", channel_name, err_msg.c_str());
         bds::BDSpeechSDK::release_instance(sdk);

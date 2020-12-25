@@ -519,13 +519,14 @@ SWITCH_MODULE_LOAD_FUNCTION(mod_baidu_asr_load) {
 //SWITCH_MODULE_LOAD_FUNCTION(卸载时执行的函数)
 SWITCH_MODULE_SHUTDOWN_FUNCTION(mod_baidu_asr_shutdown) {
     switch_log_printf(SWITCH_CHANNEL_LOG, SWITCH_LOG_DEBUG, "baidu_asr_shutdown\n");
+    if (curr_concurrent > 0) {
+        switch_log_printf(SWITCH_CHANNEL_LOG, SWITCH_LOG_DEBUG, "有未释放的识别请求,不能释放线程池,不能unload模块\n");
+        return SWITCH_STATUS_FALSE;
+    }
     if (curr_concurrent == 0 && count_concurrent > 0) {
         switch_log_printf(SWITCH_CHANNEL_LOG, SWITCH_LOG_DEBUG, "清理线程池\n");
         bds::BDSpeechSDK::do_cleanup();
         return SWITCH_STATUS_SUCCESS;
-    } else if (curr_concurrent > 0) {
-        switch_log_printf(SWITCH_CHANNEL_LOG, SWITCH_LOG_DEBUG, "有未释放的识别请求,不能释放线程池,不能unload模块\n");
-        return SWITCH_STATUS_FALSE;
     } else if (count_concurrent <= 0) {
         switch_log_printf(SWITCH_CHANNEL_LOG, SWITCH_LOG_DEBUG, "未使用不需要清理线程池\n");
         return SWITCH_STATUS_SUCCESS;

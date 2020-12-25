@@ -74,7 +74,7 @@ void asr_set_config_params(bds::BDSSDKMessage &cfg_params, switch_da_t *user_dat
     // switch_log_printf(SWITCH_CHANNEL_LOG, SWITCH_LOG_INFO, "secret_key %s\n", user_data->secret_key);
     // switch_log_printf(SWITCH_CHANNEL_LOG, SWITCH_LOG_INFO, "product_id %s\n", user_data->product_id);
     switch_log_printf(SWITCH_CHANNEL_LOG, SWITCH_LOG_INFO, "%s %s %s %s %s %f\n",
-                      switch_channel_get_name(user_data->channel), user_data->app_id, user_data->chunk_key,
+                      switch_channel_get_name(user_data->channel), user_data->app_name, user_data->app_id, user_data->chunk_key,
                       user_data->secret_key, user_data->product_id, user_data->vad_pause_frames);
 
     cfg_params.name = bds::ASR_CMD_CONFIG;

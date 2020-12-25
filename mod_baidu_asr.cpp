@@ -521,9 +521,8 @@ SWITCH_MODULE_SHUTDOWN_FUNCTION(mod_baidu_asr_shutdown) {
     switch_log_printf(SWITCH_CHANNEL_LOG, SWITCH_LOG_DEBUG, "baidu_asr_shutdown\n");
     if (curr_concurrent > 0) {
         switch_log_printf(SWITCH_CHANNEL_LOG, SWITCH_LOG_DEBUG, "有未释放的识别请求,不能释放线程池,不能unload模块\n");
-        return SWITCH_STATUS_FALSE;
-    }
-    if (curr_concurrent == 0 && count_concurrent > 0) {
+        return SWITCH_STATUS_NOUNLOAD;
+    } else if (curr_concurrent == 0 && count_concurrent > 0) {
         switch_log_printf(SWITCH_CHANNEL_LOG, SWITCH_LOG_DEBUG, "清理线程池\n");
         bds::BDSpeechSDK::do_cleanup();
         return SWITCH_STATUS_SUCCESS;
@@ -532,5 +531,17 @@ SWITCH_MODULE_SHUTDOWN_FUNCTION(mod_baidu_asr_shutdown) {
         return SWITCH_STATUS_SUCCESS;
     } else {
         return SWITCH_STATUS_SUCCESS;
+    }
+}
+
+//如果runtime函数存在，则系统核心会启动一个新线程来调用该函数。
+//在这里，可以是一个无限循环（如第67行，当然要记住给无限循环终止条件，否则该模块就不能卸载了），
+//也可以在执行一段时间后返回一个状态值，只要返回值不是 SWITCH_STATUS_TERM ，该函数就会被再次调用。
+SWITCH_MODULE_RUNTIME_FUNCTION(mod_baidu_asr_runtime) {
+    if (curr_concurrent > 0) {
+        switch_yield(200000);//延时2秒
+        return SWITCH_STATUS_NOUNLOAD;//阻止被卸载
+    } else {
+        return SWITCH_STATUS_TERM;
     }
 }

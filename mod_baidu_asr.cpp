@@ -5,6 +5,7 @@
 #include <ctime>
 #include <typeinfo>
 #include <switch.h>
+#include <atomic>
 
 //引入语音识别模块
 #include "BDSpeechSDK.hpp"
@@ -48,6 +49,12 @@ struct switch_da_t {
     switch_media_bug_t *bug;
 };
 
+//原子操作记录当前并发
+std::atomic_int curr_concurrent(0);
+
+//原子操作记录识别总次数
+std::atomic_int count_concurrent(0);
+
 #ifdef _BDS_EASR_MFE_DNN
 
 #else
@@ -73,9 +80,10 @@ void asr_set_config_params(bds::BDSSDKMessage &cfg_params, switch_da_t *user_dat
     // switch_log_printf(SWITCH_CHANNEL_LOG, SWITCH_LOG_INFO, "chunk_key %s\n", user_data->chunk_key);
     // switch_log_printf(SWITCH_CHANNEL_LOG, SWITCH_LOG_INFO, "secret_key %s\n", user_data->secret_key);
     // switch_log_printf(SWITCH_CHANNEL_LOG, SWITCH_LOG_INFO, "product_id %s\n", user_data->product_id);
-    switch_log_printf(SWITCH_CHANNEL_LOG, SWITCH_LOG_INFO, "%s %s %s %s %s %s %f\n",
+    switch_log_printf(SWITCH_CHANNEL_LOG, SWITCH_LOG_INFO, "%s %s %s %s %s %s %f curr_concurrent=%d count_concurrent=%d\n",
                       switch_channel_get_name(user_data->channel), user_data->app_name, user_data->app_id, user_data->chunk_key,
-                      user_data->secret_key, user_data->product_id, user_data->vad_pause_frames);
+                      user_data->secret_key, user_data->product_id, user_data->vad_pause_frames,
+                      curr_concurrent.operator int(), count_concurrent.operator int());
 
     cfg_params.name = bds::ASR_CMD_CONFIG;
 
@@ -290,6 +298,7 @@ void asr_output_callback(bds::BDSSDKMessage &message, void *user_arg) {
  */
 void asr_online_release(bds::BDSpeechSDK *sdk) {
     bds::BDSpeechSDK::release_instance(sdk);
+    curr_concurrent--;
 }
 
 /**
@@ -444,6 +453,9 @@ SWITCH_STANDARD_APP(start_baidu_asr_session_function) {
     if (!sdk) {
         switch_log_printf(SWITCH_CHANNEL_LOG, SWITCH_LOG_WARNING, "%s get sdk failed for %s\n", channel_name, err_msg.c_str());
         return;
+    } else {
+        curr_concurrent++;
+        count_concurrent++;
     }
 
     /*  2 设置输出回调  */
@@ -455,6 +467,7 @@ SWITCH_STANDARD_APP(start_baidu_asr_session_function) {
     if (!sdk->post(cfg_params, err_msg)) {
         switch_log_printf(SWITCH_CHANNEL_LOG, SWITCH_LOG_WARNING, "%s init sdk failed for %s\n", channel_name, err_msg.c_str());
         bds::BDSpeechSDK::release_instance(sdk);
+        curr_concurrent--;
         return;
     }
 
@@ -464,6 +477,7 @@ SWITCH_STANDARD_APP(start_baidu_asr_session_function) {
     if (!sdk->post(start_params, err_msg)) {
         switch_log_printf(SWITCH_CHANNEL_LOG, SWITCH_LOG_WARNING, "%s start sdk failed for %s\n", channel_name, err_msg.c_str());
         bds::BDSpeechSDK::release_instance(sdk);
+        curr_concurrent--;
         return;
     }
 
@@ -505,5 +519,17 @@ SWITCH_MODULE_LOAD_FUNCTION(mod_baidu_asr_load) {
 //SWITCH_MODULE_LOAD_FUNCTION(卸载时执行的函数)
 SWITCH_MODULE_SHUTDOWN_FUNCTION(mod_baidu_asr_shutdown) {
     switch_log_printf(SWITCH_CHANNEL_LOG, SWITCH_LOG_DEBUG, "baidu_asr_shutdown\n");
-    return SWITCH_STATUS_SUCCESS;
+    if (curr_concurrent == 0 && count_concurrent > 0) {
+        switch_log_printf(SWITCH_CHANNEL_LOG, SWITCH_LOG_DEBUG, "清理线程池\n");
+        bds::BDSpeechSDK::do_cleanup();
+        return SWITCH_STATUS_SUCCESS;
+    } else if (curr_concurrent > 0) {
+        switch_log_printf(SWITCH_CHANNEL_LOG, SWITCH_LOG_DEBUG, "有未释放的识别请求,不能释放线程池,不能unload模块\n");
+        return SWITCH_STATUS_FALSE;
+    } else if (count_concurrent <= 0) {
+        switch_log_printf(SWITCH_CHANNEL_LOG, SWITCH_LOG_DEBUG, "未使用不需要清理线程池\n");
+        return SWITCH_STATUS_SUCCESS;
+    } else {
+        return SWITCH_STATUS_SUCCESS;
+    }
 }

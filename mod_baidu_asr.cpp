@@ -30,6 +30,8 @@ SWITCH_MOD_DECLARE_DATA switch_loadable_module_function_table_t mod_baidu_asr##_
 SWITCH_MODULE_DEFINITION(模块名,加载时执行的函数,卸载时执行的函数,runtime不知道干啥的)*/
 SWITCH_MODULE_DEFINITION(mod_baidu_asr, mod_baidu_asr_load, mod_baidu_asr_shutdown, NULL);
 
+SWITCH_MODULE_RUNTIME_FUNCTION(mod_baidu_asr_runtime);
+
 // bds::BDSSDKMessage push_params;
 // push_params.name = bds::ASR_CMD_PUSH_AUDIO;
 
@@ -539,9 +541,11 @@ SWITCH_MODULE_SHUTDOWN_FUNCTION(mod_baidu_asr_shutdown) {
 //也可以在执行一段时间后返回一个状态值，只要返回值不是 SWITCH_STATUS_TERM ，该函数就会被再次调用。
 SWITCH_MODULE_RUNTIME_FUNCTION(mod_baidu_asr_runtime) {
     if (curr_concurrent > 0) {
+        switch_log_printf(SWITCH_CHANNEL_LOG, SWITCH_LOG_DEBUG, "mod_baidu_asr_runtime SWITCH_STATUS_NOUNLOAD\n");
         switch_yield(200000);//延时2秒
         return SWITCH_STATUS_NOUNLOAD;//阻止被卸载
     } else {
+        switch_log_printf(SWITCH_CHANNEL_LOG, SWITCH_LOG_DEBUG, "mod_baidu_asr_runtime SWITCH_STATUS_TERM\n");
         return SWITCH_STATUS_TERM;
     }
 }

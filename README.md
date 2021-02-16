@@ -58,7 +58,7 @@ reload mod_baidu_asr
 
 # 五、呼叫测试 语音编码必须是pcmu@8000
 ## 1.呼叫字符串
-originate {absolute_codec_string=PCMU}user/8006 baidu_asr:'10555002 jhRA15uv8Lvd4r9qbtmOODMv f0a12f8261e1121861a1cd3f4ed02f68 15362 5',park inline
+originate {absolute_codec_string=PCMU}user/8006 baidu_asr:'YourOwnName 10555002 jhRA15uv8Lvd4r9qbtmOODMv f0a12f8261e1121861a1cd3f4ed02f68 15362 5',park inline
 
 ## 2.参数介绍
 baidu_asr:'app_id chunk_key secret_key PRODUCT_ID 静音切分帧30帧=300ms'
